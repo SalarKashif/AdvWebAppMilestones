@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!--JQuery-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap for front end -->
+    <link
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="../../myStyling.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Books from Google</title>
+  </head>
+  <body class="body_style dark">
+    <ul class="nav nav-pills nav-fill" class="dark">
+      <li class="nav-item">
+        <a
+          class="nav-link nav-item-disabled"
+          aria-current="page"
+          href="index.html"
+          >Home</a
+        >
+      </li>
+      <li class="nav-item mx-1">
+        <a class="nav-link active" aria-current="page" href="../../index.html"
+          >Milestone 1</a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link nav-item-disabled" href="">Milestone 2</a>
+      </li>
+      <li class="nav-item mx-2">
+        <a class="nav-link nav-item-disabled" href="">Milestone 3</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link nav-item-disabled" href="">Milestone 4</a>
+      </li>
+    </ul>
+    <header class="banner-picture">
+      <h1 class="banner-header dark">Salar's Milestone 1</h1>
+    </header>
+    <div id="wrapper">
+      <main>
+        <h3 class="intro-caption dark py-2">Welcome to google books search!</h3>
+        <div
+          class="btn-group"
+          style="display: flex; justify-content: center; align-items: center"
+          role="group"
+          aria-label="Basic example"
+        >
+          <button type="button" href="" class="btn btn-primary">
+            Search View
+          </button>
+          <button
+            type="button"
+            href="./milestoneOneSingle.html"
+            class="btn btn-secondary"
+          >
+            Single Book View
+          </button>
+        </div>
+        <div class="gallery"></div>
+      </main>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        fetch("google-books-search.json")
+          .then((response) => response.json())
+          .then((data) => {
+            var img;
+            console.log(data.items[0].volumeInfo);
+            data.items.forEach((book) => {
+              // $.ajax({
+              //     url: `${book.volumeInfo.imageLinks.thumbnail}`,
+              //     crossDomain: true,
+              //     type: 'GET',
+              //     dataType: 'html',
+              //     success: function(response){
+              //         img = response;
+              //     },
+              //     error: function(response){
+
+              //     }
+              // });
+
+              var description =
+                book.volumeInfo.description.substring(0, 200) + "...";
+
+              var title = book.volumeInfo.title;
+
+              var thumbnail = book.volumeInfo.imageLinks.thumbnail;
+
+              var author = book.volumeInfo.authors[0];
+
+              var selfLink = book.accessInfo.webReaderLink;
+
+              $(".gallery").append(`
+              <div class="box dark">
+                <div class="image">
+                  <a
+                    target="_blank"
+                    href="${selfLink}"
+                  >
+                    <img src="${thumbnail}" class="zoo" />
+                    <div class="text">${title}</div>
+                  </a>
+                  <h4>Author: ${author}</h4>
+                  <br>
+                  <p class="image-caption">
+                    ${description}
+                  </p>
+                </div>
+              </div>
+                `);
+            });
+          })
+          .catch((error) => {
+            // console.log("Error:", error);
+          });
+      });
+    </script>
+  </body>
+</html>
