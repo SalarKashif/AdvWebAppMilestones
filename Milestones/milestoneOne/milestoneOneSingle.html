@@ -27,12 +27,12 @@
         <a
           class="nav-link nav-item-disabled"
           aria-current="page"
-          href="index.html"
+          href="../../index.html"
           >Home</a
         >
       </li>
       <li class="nav-item mx-1">
-        <a class="nav-link active" aria-current="page" href="../../index.html"
+        <a class="nav-link active" aria-current="page" href="milestoneOne.html"
           >Milestone 1</a
         >
       </li>
@@ -50,20 +50,108 @@
       <h1 class="banner-header dark">Salar's Milestone 1</h1>
     </header>
     <div id="wrapper">
-      <main>
-        <h3 class="intro-caption dark py-2">Welcome to google books search!</h3>
+      <main id="main">
+        <h3 class="intro-caption dark py-2">Welcome to Single Book View!</h3>
         <div
           class="btn-group"
           style="display: flex; justify-content: center; align-items: center"
           role="group"
           aria-label="Basic example"
         >
-          <button type="button" class="btn btn-primary">Search View</button>
-          <button type="button" class="btn btn-secondary">
+          <button id="searchBookButton" type="button" class="btn btn-secondary">
+            Search View
+          </button>
+          <button type="button" class="btn btn-primary">
             Single Book View
           </button>
         </div>
       </main>
     </div>
+    <script>
+      $(document).ready(function () {
+        fetch("google-books-book.json")
+          .then((response) => response.json())
+          .then((book) => {
+            var description =
+              book.volumeInfo.description.substring(54, 300) + "...";
+
+            var title = book.volumeInfo.title;
+
+            var subtitle = book.volumeInfo.subtitle;
+
+            var thumbnail = book.volumeInfo.imageLinks.extraLarge;
+
+            var author = book.volumeInfo.authors[0];
+
+            var selfLink = book.accessInfo.webReaderLink;
+
+            var publisher = book.volumeInfo.publisher;
+
+            var publishDate = book.volumeInfo.publishedDate;
+
+            var rating = book.volumeInfo.averageRating;
+
+            var previewLink = book.volumeInfo.previewLink;
+
+            $("#main").append(`
+              <div class="jumbotron"></div>
+                <h1 id="bookTitle" class="display-4 exempt">
+                  ${title}
+                </h1>
+                <img src="${thumbnail}" style="width: 60%;" class="gallery-card" />
+                <p id="publisher" class="lead exempt">
+                  Published ${publishDate} by ${publisher}
+                </p>
+                <p id="rating" class="lead exempt">
+                  Average Rating: ${rating}
+                </p>
+                <hr class="my-4 exempt" />
+                <h2 id="bookSubtitle" class="exempt">${subtitle}</h2>
+                <p class="exempt"><strong>Author: </strong> ${author}</p>
+                <p class="exempt" style="color: black !important;"> Description: ${description}</p>
+                <p class="lead exempt">
+                  <a class="btn exempt btn-primary btn-lg" href="${previewLink}" role="button"
+                    >Learn more</a
+                  >
+                </p>
+                <hr class="my-4 exempt" />
+                <h3 class="exempt">Extra Information:</h3>
+                <div id="extraInfo" >
+                  </div>
+              </div>
+            `);
+
+            volumeInfo = book.volumeInfo;
+
+            collectKeyValuePairs(book);
+          })
+          .catch((error) => {
+            console.log("error:", error);
+            // console.log("Error:", error);
+          });
+
+        function collectKeyValuePairs(data, results = []) {
+          if (Array.isArray(data)) {
+            data.forEach((item) => {
+              collectKeyValuePairs(item, results);
+            });
+          } else if (typeof data === "object" && data !== null) {
+            for (const key in data) {
+              if (data.hasOwnProperty(key)) {
+                results.push([key, data[key]]);
+                collectKeyValuePairs(data[key], results);
+                $("#extraInfo").append(`
+                <p class="exempt" > ${key} : ${data[key]} </p>
+                `);
+              }
+            }
+          }
+          return results;
+        }
+      });
+      $("#searchBookButton").on("click", function () {
+        window.location.replace("./milestoneOne.html");
+      });
+    </script>
   </body>
 </html>

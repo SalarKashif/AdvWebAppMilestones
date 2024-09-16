@@ -59,7 +59,9 @@
           <button type="button" href="" class="btn btn-primary">
             Search View
           </button>
+
           <button
+            id="singleBookButton"
             type="button"
             href="./milestoneOneSingle.html"
             class="btn btn-secondary"
@@ -77,31 +79,24 @@
           .then((response) => response.json())
           .then((data) => {
             var img;
-            console.log(data.items[0].volumeInfo);
+
             data.items.forEach((book) => {
-              // $.ajax({
-              //     url: `${book.volumeInfo.imageLinks.thumbnail}`,
-              //     crossDomain: true,
-              //     type: 'GET',
-              //     dataType: 'html',
-              //     success: function(response){
-              //         img = response;
-              //     },
-              //     error: function(response){
-
-              //     }
-              // });
-
               var description =
                 book.volumeInfo.description.substring(0, 200) + "...";
 
               var title = book.volumeInfo.title;
 
+              var subtitle = book.volumeInfo.subtitle;
+
               var thumbnail = book.volumeInfo.imageLinks.thumbnail;
 
               var author = book.volumeInfo.authors[0];
 
-              var selfLink = book.accessInfo.webReaderLink;
+              var selfLink = book.volumeInfo.previewLink;
+
+              var publisher = book.volumeInfo.publisher;
+
+              var publishDate = book.volumeInfo.publishedDate;
 
               $(".gallery").append(`
               <div class="box dark">
@@ -110,11 +105,11 @@
                     target="_blank"
                     href="${selfLink}"
                   >
-                    <img src="${thumbnail}" class="zoo" />
-                    <div class="text">${title}</div>
+                    <img src="${thumbnail}" class="gallery-card" />
+                    <div class="text">${title} : <br> <p style="color: white; text-decoration: none;" >${subtitle}</p> </div>
                   </a>
-                  <h4>Author: ${author}</h4>
-                  <br>
+                  <h4><strong>Author</strong>: ${author}</h4>
+                  <h6 style="color: grey;" >Published ${publishDate} by ${publisher}</h6>
                   <p class="image-caption">
                     ${description}
                   </p>
@@ -126,6 +121,10 @@
           .catch((error) => {
             // console.log("Error:", error);
           });
+      });
+
+      $("#singleBookButton").on("click", function () {
+        window.location.replace("./milestoneOneSingle.html");
       });
     </script>
   </body>
