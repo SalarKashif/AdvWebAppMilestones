@@ -68,6 +68,14 @@
           >
             Single Book View
           </button>
+          <button
+            id="bonusBookButton"
+            type="button"
+            style="color: rgb(27, 255, 6)"
+            class="btn btn-secondary"
+          >
+            Bonus Open library
+          </button>
         </div>
         <div class="gallery"></div>
       </main>
@@ -125,6 +133,12 @@
 
       $("#singleBookButton").on("click", function () {
         window.location.replace("./milestoneOneSingle.html");
+      });
+      $("#bonusBookButton").on("click", function () {
+        window.location.replace("./milestoneOneBonus.html");
+      });
+      $("#searchBookButton").on("click", function () {
+        window.location.replace("./milestoneOne.html");
       });
     </script>
   </body>

@@ -61,14 +61,14 @@
           <button id="searchBookButton" type="button" class="btn btn-secondary">
             Search View
           </button>
-          <button type="button" class="btn btn-primary">
+          <button id="singleBookButton" type="button" class="btn btn-secondary">
             Single Book View
           </button>
           <button
             id="bonusBookButton"
             type="button"
             style="color: rgb(27, 255, 6)"
-            class="btn btn-secondary"
+            class="btn btn-primary"
           >
             Bonus Open library
           </button>
@@ -77,31 +77,13 @@
     </div>
     <script>
       $(document).ready(function () {
-        fetch("google-books-book.json")
-          .then((response) => response.json())
-          .then((book) => {
-            var description =
-              book.volumeInfo.description.substring(54, 300) + "...";
+        $.ajax({
+          url: "https://openlibrary.org/api/books?bibkeys=ISBN%3A0201558025%2CLCCN%3A93005405&format=json&jscmd=data",
+          type: "GET",
+        }).then(function (response) {
+          console.log(response);
 
-            var title = book.volumeInfo.title;
-
-            var subtitle = book.volumeInfo.subtitle;
-
-            var thumbnail = book.volumeInfo.imageLinks.extraLarge;
-
-            var author = book.volumeInfo.authors[0];
-
-            var selfLink = book.accessInfo.webReaderLink;
-
-            var publisher = book.volumeInfo.publisher;
-
-            var publishDate = book.volumeInfo.publishedDate;
-
-            var rating = book.volumeInfo.averageRating;
-
-            var previewLink = book.volumeInfo.previewLink;
-
-            $("#main").append(`
+          $("#main").append(`
               <div class="jumbotron"></div>
                 <h1 id="bookTitle" class="display-4 exempt">
                   ${title}
@@ -130,16 +112,10 @@
               </div>
             `);
 
-            volumeInfo = book.volumeInfo;
+          collectKeyValuePairs(book);
 
-            collectKeyValuePairs(book);
-
-            $(".extraInfo").hide();
-          })
-          .catch((error) => {
-            console.log("error:", error);
-            // console.log("Error:", error);
-          });
+          $(".extraInfo").hide();
+        });
 
         function collectKeyValuePairs(data, key = null) {
           // console.log(
