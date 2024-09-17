@@ -130,23 +130,37 @@
             // console.log("Error:", error);
           });
 
-        function collectKeyValuePairs(data, results = []) {
-          if (Array.isArray(data)) {
-            data.forEach((item) => {
-              collectKeyValuePairs(item, results);
-            });
-          } else if (typeof data === "object" && data !== null) {
-            for (const key in data) {
-              if (data.hasOwnProperty(key)) {
-                results.push([key, data[key]]);
-                collectKeyValuePairs(data[key], results);
-                $("#extraInfo").append(`
-                <p class="exempt" > ${key} : ${data[key]} </p>
-                `);
+        function collectKeyValuePairs(data, key = null) {
+          // console.log(
+          //   "Data: ",
+          //   data,
+          //   " - Key: ",
+          //   key,
+          //   " - Is Array?: ",
+          //   Array.isArray(data),
+          //   " - Is Object?: ",
+          //   typeof data === "object"
+          // );
+          if (typeof data === "object" && data !== null) {
+            if (Array.isArray(data)) {
+              for (i = 0; i < data.length; i++) {
+                collectKeyValuePairs(data[i], key);
+              }
+            } else {
+              for (const currentKey in data) {
+                collectKeyValuePairs(data[currentKey], currentKey);
               }
             }
+          } else if (Array.isArray(data)) {
+            for (i = 0; i < data.length; i++) {
+              collectKeyValuePairs(data[i], key);
+            }
+          } else {
+            $("#extraInfo").append(`
+                <p class="exempt" > ${key} : ${data} </p>
+                `);
+            return 0;
           }
-          return results;
         }
       });
       $("#searchBookButton").on("click", function () {
