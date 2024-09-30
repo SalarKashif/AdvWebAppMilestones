@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!--JQuery-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap for front end -->
+    <link
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="../../myStyling.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Milestone 2</title>
+  </head>
+  <body class="body_style dark">
+    <ul class="nav nav-pills nav-fill" class="dark">
+      <li class="nav-item">
+        <a
+          class="nav-link nav-item-disabled"
+          aria-current="page"
+          href="../../index.html"
+          >Home</a
+        >
+      </li>
+      <li class="nav-item mx-1">
+        <a
+          class="nav-link nav-item-disabled"
+          aria-current="page"
+          href="../milestoneOne/milestoneOne.html"
+          >Milestone 1</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link active"
+          href="./Milestones/milestoneTwo/milestoneTwoMenuPage"
+          >Milestone 2</a
+        >
+      </li>
+      <li class="nav-item mx-2">
+        <a class="nav-link nav-item-disabled" href="">Milestone 3</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link nav-item-disabled" href="">Milestone 4</a>
+      </li>
+    </ul>
+    <header class="banner-picture">
+      <h1 class="banner-header dark">Salar's Milestone 2</h1>
+    </header>
+    <div id="wrapper">
+      <main>
+        <h3 class="intro-caption dark py-2">Google Book Search</h3>
+        <div
+          class="btn-group"
+          style="display: flex; justify-content: center; align-items: center"
+          role="group"
+          aria-label="Basic example"
+        >
+          <button
+            type="button"
+            href=""
+            value="./milestoneTwoMenuPage.html"
+            class="btn btn-primary"
+          >
+            Search Page
+          </button>
+
+          <button
+            id="singleBookButton"
+            type="button"
+            value="./milestoneTwoLibrary.html"
+            class="btn btn-secondary"
+            onclick="redirectToPage($(this).val())"
+          >
+            My Bookshelf
+          </button>
+        </div>
+        <br />
+        <div class="input-group mb-3">
+          <input
+            id="searchInput"
+            type="text"
+            class="form-control"
+            placeholder="Search for a Book..."
+            aria-describedby="basic-addon2"
+          />
+          <div class="input-group-append">
+            <button
+              id="searchButton"
+              class="btn btn-outline-secondary text-success"
+              type="button"
+              style="--bs-btn-hover-bg: #00ff76"
+              onclick="preSearchFunction()"
+            >
+              Search
+            </button>
+          </div>
+          <select
+            id="resultsPerPage"
+            class="form-select-sm ms-2"
+            aria-label="Default select example"
+          >
+            <option selected value="5">Results per page</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+          </select>
+        </div>
+        <div
+          id="alertDiv"
+          class="alert alert-danger"
+          role="alert"
+          style="display: none"
+        >
+          Please input something in the search.
+        </div>
+        <nav aria-label="..." style="display: show">
+          <ul id="paginationNav" style="display: none" class="pagination">
+            <li
+              id="previousPageButton"
+              class="disabled page-item"
+              onclick="previousPage()"
+            >
+              <a class="page-link" href="#">Previous</a>
+            </li>
+            <li
+              id=""
+              class="page-item del active"
+              value="1"
+              onclick="specificPage($(this).val())"
+            >
+              <a class="page-link" href="#">1</a>
+            </li>
+          </ul>
+        </nav>
+        <div id="gallery" class="gallery"></div>
+      </main>
+    </div>
+
+    <script>
+      let currentPage = 1;
+      let startIndex = 0;
+      let totalItems = 0;
+      let maxPage = 0;
+
+      function specificPage(pageNum) {
+        currentPage = pageNum;
+        startIndex = currentPage * $("#resultsPerPage").val();
+        searchBook();
+      }
+
+      function nextPage() {
+        currentPage++;
+        startIndex = currentPage * $("#resultsPerPage").val();
+        searchBook();
+      }
+
+      function previousPage() {
+        if (currentPage == 1) {
+          $("#previousPageButton").addClass("disabled");
+        } else {
+          currentPage--;
+          startIndex = currentPage * $("#resultsPerPage").val();
+          searchBook();
+        }
+      }
+
+      $("#searchInput").keydown(function (event) {
+        if (event.key === "Enter") {
+          currentPage = 1;
+          startIndex = 0;
+          searchBook();
+        }
+      });
+
+      function preSearchFunction() {
+        currentPage = 1;
+        startIndex = 0;
+        searchBook();
+      }
+
+      function searchBook() {
+        var searchInput = $("#searchInput").val();
+        var resultsPerPage = $("#resultsPerPage").val();
+        var paginationLength = 0;
+
+        if (searchInput == "" || !searchInput) {
+          $("#alertDiv").html("Please input something in the search.");
+          $("#alertDiv").show();
+          setTimeout(function () {
+            $("#alertDiv").hide();
+          }, 3000);
+        } else {
+          try {
+            $.ajax({
+              url: `https://www.googleapis.com/books/v1/volumes?q=${searchInput}&startIndex=${startIndex}&maxResults=${resultsPerPage}`,
+              type: "GET",
+              dataType: "JSON",
+              success: function (response) {
+                rebuildPagination(response);
+
+                totalItems = response.totalItems;
+
+                $("#paginationNav").show();
+
+                $(".currentResults").remove();
+
+                response.items.forEach((book) => {
+                  var bookTitle = book.volumeInfo.title;
+
+                  var author = book.volumeInfo.authors;
+
+                  var description = book.volumeInfo.description;
+
+                  var id = book.id;
+
+                  if (description) {
+                    description = description.substring(0, 60) + "...";
+                  }
+
+                  var thumbnail = book.volumeInfo.imageLinks
+                    ? book.volumeInfo.imageLinks.thumbnail
+                    : "https://via.placeholder.com/150";
+
+                  html = `
+                <div class="card box currentResults" style="width: 18rem">
+                  <img src="${thumbnail}" class="card-img-top" />
+                  <div class="card-body">
+                    <a href="./milestoneTwoSingleBook.html?bookId=${id}"><h5 class="card-title">${bookTitle}</h5></a>
+                    <h6>Authors: ${author}</h6>
+                    <p class="card-text">
+                    ${description}
+                    </p>
+                    <a href="./milestoneTwoSingleBook.html?bookId=${id}" class="btn btn-primary">Learn More</a>
+                  </div>
+                </div>
+                  `;
+
+                  $("#gallery").append(html);
+                });
+              },
+              error: function (response) {
+                $("#alertDiv").html("There were no search results");
+                $("#alertDiv").show();
+                setTimeout(function () {
+                  $("#alertDiv").hide();
+                }, 3000);
+              },
+            });
+          } catch (error) {
+            console.log("there was an error : ", error);
+          }
+        }
+      }
+
+      function rebuildPagination(response) {
+        maxPage = totalItems / resultsPerPage;
+
+        if (currentPage > 1) {
+          $("#previousPageButton").removeClass("disabled");
+        }
+
+        $("#nextPageButton").remove();
+        $(".del").remove();
+
+        if (maxPage - currentPage < 10) {
+          paginationLength = maxPage - currentPage;
+        } else {
+          paginationLength = 11;
+        }
+
+        $("#paginationNav").append(`
+          <li
+            id=""
+            class="page-item active del"
+            value="${currentPage}"
+          >
+            <a class="page-link" href="#">${currentPage}</a>
+          </li>
+          `);
+
+        for (var i = currentPage + 1; i < paginationLength + currentPage; i++) {
+          $("#paginationNav").append(`
+            <li
+              id=""
+              class="page-item del"
+              value="${i}"
+              onclick="specificPage($(this).val())"
+            >
+              <a class="page-link" href="#">${i}</a>
+            </li>
+          `);
+        }
+
+        $("#paginationNav").append(`
+          <li
+          id="nextPageButton"
+          class="page-item del"
+          value=""
+          onclick="nextPage()"
+          >
+          <a class="page-link" href="#">Next</a>
+          </li>
+          `);
+      }
+
+      function redirectToPage(uri) {
+        window.location.href = uri;
+      }
+    </script>
+  </body>
+</html>

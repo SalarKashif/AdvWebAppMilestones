@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!--JQuery-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap for front end -->
+    <link
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="../../myStyling.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Milestone 2</title>
+  </head>
+  <body class="body_style dark">
+    <ul class="nav nav-pills nav-fill" class="dark">
+      <li class="nav-item">
+        <a
+          class="nav-link nav-item-disabled"
+          aria-current="page"
+          href="../../index.html"
+          >Home</a
+        >
+      </li>
+      <li class="nav-item mx-1">
+        <a
+          class="nav-link nav-item-disabled"
+          aria-current="page"
+          href="../milestoneOne/milestoneOne.html"
+          >Milestone 1</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link active"
+          href="./Milestones/milestoneTwo/milestoneTwoMenuPage"
+          >Milestone 2</a
+        >
+      </li>
+      <li class="nav-item mx-2">
+        <a class="nav-link nav-item-disabled" href="">Milestone 3</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link nav-item-disabled" href="">Milestone 4</a>
+      </li>
+    </ul>
+    <header class="banner-picture">
+      <h1 class="banner-header dark">Salar's Milestone 2</h1>
+    </header>
+    <div id="wrapper">
+      <main>
+        <h3 class="intro-caption dark py-2">My Library</h3>
+        <div
+          class="btn-group"
+          style="display: flex; justify-content: center; align-items: center"
+          role="group"
+          aria-label="Basic example"
+        >
+          <button
+            type="button"
+            href=""
+            value="./milestoneTwoMenuPage.html"
+            class="btn btn-secondary"
+            onclick="redirectToPage($(this).val())"
+          >
+            Search Page
+          </button>
+
+          <button id="singleBookButton" type="button" class="btn btn-primary">
+            My Bookshelf
+          </button>
+        </div>
+        <br />
+        <div id="gallery" class="gallery"></div>
+      </main>
+    </div>
+
+    <script>
+      function redirectToPage(uri) {
+        window.location.href = uri;
+      }
+
+      $(document).ready(function () {
+        $.ajax({
+          url: `https://www.googleapis.com/books/v1/users/107544228173307734352/bookshelves/3/volumes`,
+          type: "GET",
+          dataType: "JSON",
+          success: function (response) {
+            response.items.forEach((book) => {
+              var bookTitle = book.volumeInfo.title;
+
+              var author = book.volumeInfo.authors;
+
+              var description = book.volumeInfo.description;
+
+              var id = book.id;
+
+              if (description) {
+                description = description.substring(0, 60) + "...";
+              }
+
+              var thumbnail = book.volumeInfo.imageLinks
+                ? book.volumeInfo.imageLinks.thumbnail
+                : "https://via.placeholder.com/150";
+
+              html = `
+                <div class="card box currentResults" style="width: 18rem">
+                  <img src="${thumbnail}" class="card-img-top" />
+                  <div class="card-body">
+                    <h5 class="card-title">${bookTitle}</h5>
+                    <h6>Authors: ${author}</h6>
+                    <p class="card-text">
+                    ${description}
+                    </p>
+                    <a href="./milestoneTwoSingleBook.html?bookId=${id}" class="btn btn-primary">Learn More</a>
+                  </div>
+                </div>
+                  `;
+
+              $("#gallery").append(html);
+            });
+          },
+          error: function (response) {
+            $("#alertDiv").html("There were no search results");
+            $("#alertDiv").show();
+            setTimeout(function () {
+              $("#alertDiv").hide();
+            }, 3000);
+          },
+        });
+      });
+
+      function redirectToPage(uri) {
+        window.location.href = uri;
+      }
+    </script>
+  </body>
+</html>
