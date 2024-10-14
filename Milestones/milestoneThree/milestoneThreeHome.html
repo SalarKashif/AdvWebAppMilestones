@@ -19,7 +19,7 @@
     />
     <link rel="stylesheet" type="text/css" href="../../myStyling.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Milestone 2</title>
+    <title>Milestone 3</title>
   </head>
   <body class="body_style dark">
     <ul class="nav nav-pills nav-fill" class="dark">
@@ -40,21 +40,21 @@
         >
       </li>
       <li class="nav-item">
-        <a class="nav-link active" href="">Milestone 2</a>
-      </li>
-      <li class="nav-item mx-2">
         <a
           class="nav-link nav-item-disabled"
-          href="../milestoneThree/milestoneThreeHome.html"
-          >Milestone 3</a
+          href="../milestoneTwo/milestoneTwoMenuPage.html"
+          >Milestone 2</a
         >
+      </li>
+      <li class="nav-item mx-2">
+        <a class="nav-link active" href="">Milestone 3</a>
       </li>
       <li class="nav-item">
         <a class="nav-link nav-item-disabled" href="">Milestone 4</a>
       </li>
     </ul>
     <header class="banner-picture">
-      <h1 class="banner-header dark">Salar's Milestone 2</h1>
+      <h1 class="banner-header dark">Salar's Milestone 3</h1>
     </header>
     <div id="wrapper">
       <main>
@@ -72,16 +72,6 @@
             class="btn btn-primary"
           >
             Search Page
-          </button>
-
-          <button
-            id="singleBookButton"
-            type="button"
-            value="./milestoneTwoLibrary.html"
-            class="btn btn-secondary"
-            onclick="redirectToPage($(this).val())"
-          >
-            My Bookshelf
           </button>
         </div>
         <br />
@@ -109,7 +99,7 @@
             class="form-select-sm ms-2"
             aria-label="Default select example"
           >
-            <option selected value="5">Results per page</option>
+            <option selected value="10">Results per page</option>
             <option value="5">5</option>
             <option value="10">10</option>
             <option value="25">25</option>
@@ -145,6 +135,7 @@
         <div id="gallery" class="gallery"></div>
       </main>
     </div>
+    <div id="wrapper" class="bookInfoWrapper" style="display: show"></div>
 
     <script>
       let currentPage = 1;
@@ -227,20 +218,20 @@
                     description = description.substring(0, 60) + "...";
                   }
 
-                  var thumbnail = book.volumeInfo.imageLinks
+                  var thumbnail = book.volumeInfo?.imageLinks
                     ? book.volumeInfo.imageLinks.thumbnail
                     : "https://via.placeholder.com/150";
 
                   html = `
-                <div class="card box currentResults" style="width: 18rem">
+                <div class="card box currentResults" style="width: 18rem" type="button"onclick="loadBookInfo('${id}')">
                   <img src="${thumbnail}" class="card-img-top" />
                   <div class="card-body">
-                    <a href="./milestoneTwoSingleBook.html?bookId=${id}"><h5 class="card-title">${bookTitle}</h5></a>
+                    <a type="button"><h5 class="card-title">${bookTitle}</h5></a>
                     <h6>Authors: ${author}</h6>
                     <p class="card-text">
                     ${description}
                     </p>
-                    <a href="./milestoneTwoSingleBook.html?bookId=${id}" class="btn btn-primary">Learn More</a>
+                    <a class="btn btn-primary">Learn More</a>
                   </div>
                 </div>
                   `;
@@ -265,7 +256,8 @@
       function rebuildPagination(response, paginationLength) {
         var resultsPerPage = $("#resultsPerPage").val();
 
-        maxPage = Math.ceil(totalItems / resultsPerPage);
+        maxPage = Math.ceil(60 / resultsPerPage);
+
         var paginationLimit = 11;
 
         if (currentPage > 1) {
@@ -321,6 +313,128 @@
 
       function redirectToPage(uri) {
         window.location.href = uri;
+      }
+
+      function loadBookInfo(id) {
+        $(".jumbotron").remove();
+        $(".bookInfoWrapper").hide();
+
+        $.ajax({
+          url: `https://www.googleapis.com/books/v1/volumes/${id}`,
+          type: "GET",
+          dataType: "JSON",
+          success: function (book) {
+            console.log("success");
+            console.log(book);
+            var description = book.volumeInfo?.description
+              ? book.volumeInfo.description.substring(54, 300) + "..."
+              : "No Description";
+
+            var title = book.volumeInfo.title;
+
+            var subtitle = book.volumeInfo.subtitle;
+
+            var thumbnail = book.volumeInfo.imageLinks.extraLarge;
+
+            var author = book.volumeInfo.authors[0];
+
+            var selfLink = book.accessInfo.webReaderLink;
+
+            var publisher = book.volumeInfo.publisher;
+
+            var publishDate = book.volumeInfo.publishedDate;
+
+            var rating = book.volumeInfo.averageRating;
+
+            var previewLink = book.volumeInfo.previewLink;
+
+            $(".bookInfoWrapper").append(`
+              <div class="jumbotron">
+                <br />
+                <h3 id="bookTitle" class="intro-caption dark py-2">Title: ${title}</h3>
+                <img src="${thumbnail}" style="width: 30%;" class="gallery-card" />
+                <p id="publisher" class="lead exempt">
+                  Published ${publishDate} by ${publisher}
+                </p>
+                <p id="rating" class="lead exempt">
+                  Average Rating: ${rating}
+                </p>
+                <hr class="my-4 exempt" />
+                <h2 id="bookSubtitle" class="exempt">${subtitle}</h2>
+                <p class="exempt"><strong>Author: </strong> ${author}</p>
+                <p class="exempt" style="color: black !important;"> Description: ${description}</p>
+                <p class="lead exempt">
+                  <a class="btn exempt btn-primary btn-lg" href="${previewLink}" role="button"
+                    >Learn more</a
+                  >
+                </p>
+                <hr class="my-4 exempt"/>
+                <a class="btn exempt btn-primary btn-lg" onclick="showInfo()" role="button">Click Here for Extra Information</a>
+                <h3 class="exempt extraInfo">Extra Information:</h3>
+                <div class="extraInfo" id="extraInfo" >
+                  </div>
+              </div>
+            `);
+
+            volumeInfo = book.volumeInfo;
+
+            collectKeyValuePairs(book);
+
+            $(".extraInfo").show();
+
+            $(".bookInfoWrapper").show();
+            $("html, body").animate(
+              {
+                scrollTop: $(".jumbotron").offset().top + 20,
+              },
+              400
+            );
+          },
+          error: function (response) {
+            console.log("failure");
+          },
+        });
+      }
+
+      function collectKeyValuePairs(data, key = null) {
+        // console.log(
+        //   "Data: ",
+        //   data,
+        //   " - Key: ",
+        //   key,
+        //   " - Is Array?: ",
+        //   Array.isArray(data),
+        //   " - Is Object?: ",
+        //   typeof data === "object"
+        // );
+        if (typeof data === "object" && data !== null) {
+          if (Array.isArray(data)) {
+            for (i = 0; i < data.length; i++) {
+              collectKeyValuePairs(data[i], key);
+            }
+          } else {
+            for (const currentKey in data) {
+              collectKeyValuePairs(data[currentKey], currentKey);
+            }
+          }
+        } else if (Array.isArray(data)) {
+          for (i = 0; i < data.length; i++) {
+            collectKeyValuePairs(data[i], key);
+          }
+        } else {
+          $("#extraInfo").append(`
+                <p class="exempt" > <strong> ${key} </strong> : ${data} </p>
+                `);
+          return 0;
+        }
+      }
+
+      function showInfo() {
+        if ($(".extraInfo").is(":visible") == false) {
+          $(".extraInfo").show();
+        } else {
+          $(".extraInfo").hide();
+        }
       }
     </script>
   </body>
