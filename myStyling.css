@@ -78,6 +78,69 @@ h3 {
   margin: 0 auto;
   text-align: center;
 }
+.gallery.list-view {
+  width: 100%;
+  display: block; /* Switch to block for list layout */
+  margin: 0 auto;
+  text-align: left; /* Align text to the left */
+}
+
+.list-view {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensures content spreads across the row */
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.list-item:hover {
+  background-color: #f9f9f9;
+}
+
+.more-details-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.more-details-button:hover {
+  background-color: #0056b3;
+}
+
+.list-thumbnail {
+  width: 60px;
+  height: 80px;
+  margin-right: 15px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.list-content {
+  flex-grow: 1;
+}
+
+.list-title {
+  font-size: 1.1em;
+  margin: 0;
+  color: black;
+}
+
+.list-author,
+.list-description {
+  font-size: 0.9em;
+  color: #555;
+  margin: 5px 0 0;
+}
 
 .box {
   flex-basis: 20%;
