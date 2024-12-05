@@ -12,6 +12,21 @@
   font-size: 300%;
 }
 
+.gradient-text {
+  font-size: 3rem;
+  font-weight: bold;
+  background: linear-gradient(to right, #ffebfb, #7c2269);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+.varela-round-regular {
+  font-family: "Varela Round", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 .content-border {
   height: 75px;
   width: 75%;
@@ -19,6 +34,47 @@
   position: absolute;
   top: 8%;
   right: 10%;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Ensure full width of the carousel */
+  height: 100%; /* Ensure full height of the carousel */
+  position: absolute; /* Position relative to the parent carousel */
+  top: 0;
+  left: 0;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+body.primary-background {
+  background: url("space-background.png") no-repeat top,
+    /* Main image at the top */ url("infinite-space-background-1.png") repeat;
+  background-size: 130vw auto, auto; /* Main image covers viewport, repeating image defaults */
+  background-position: top, 0 0; /* Positions the main image and repeated image */
+  height: 100vh; /* Ensures the body height equals the viewport height */
+  overflow-y: scroll; /* Enables vertical scrolling if content exceeds viewport */
+  margin: 0; /* Removes default body margins */
+}
+
+.container {
+  display: flex;
+  gap: 20px; /* Space between the two carousels */
+  padding-bottom: 4vh;
+}
+
+.carousel-container {
+  flex: 1; /* Equal width for both carousels */
+  max-width: 45%; /* Optional: control the maximum width */
+}
+
+.carousel img {
+  border-radius: 8px; /* Optional: rounded corners for a polished look */
 }
 
 .rslides_container {

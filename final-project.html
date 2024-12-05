@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Mustache.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mustache@4.2.0/mustache.min.js"></script>
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" type="text/css" href="../../myStyling.css" />
+
+    <!-- Icon -->
+    <link rel="icon" href= 
+    "G.png" 
+              type="image/x-icon"> 
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Groovie</title>
+  </head>
+  <body
+    style="opacity: 80%; padding-top: 5%"
+    class="body_style primary-background"
+  >
+    <header class="banner-picture">
+      <!-- <h1 class="banner-header dark gradient-text">Groovie</h1>
+      <p
+        class="varela-round-regular"
+        style="
+          padding: 0.5%;
+          text-align: center;
+          width: 50%;
+          margin: auto;
+          margin-top: 1.5%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+        "
+      >
+        YOUR PERSONAL MOVIE ITINERARY
+      </p> -->
+    </header>
+    <div id="wrapper">
+      <main>
+        <h3 class="intro-caption dark py-2">Top Movies and Shows</h3>
+        <div id="carousel-level" class="container d-flex justify-content-between">
+          <div class="carousel-container">
+            <h3 class="text-center">Movies</h3>
+            <div id="carousel1" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carousel1" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carousel1" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carousel1" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#carousel1" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                <button type="button" data-bs-target="#carousel1" data-bs-slide-to="4" aria-label="Slide 5"></button>
+              </div>
+              <div class="carousel-inner" id="carousel-item-list-1">
+                <!-- <div class="carousel-item active">
+                  <img src="https://image.tmdb.org/t/p/w500/yh64qw9mgXBvlaWDi7Q9tpUBAvH.jpg" class="d-block w-100" alt="...">
+                  <div class="carousel-caption d-none d-md-block">
+                  </div>
+                </div> -->
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carousel1" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carousel1" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+        
+          <div class="carousel-container">
+            <h3 class="text-center">Shows</h3>
+            <div id="carousel2" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carousel2" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carousel2" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carousel2" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#carousel2" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                <button type="button" data-bs-target="#carousel2" data-bs-slide-to="4" aria-label="Slide 5"></button>
+              </div>
+              <div class="carousel-inner" id="carousel-item-list-2">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carousel2" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carousel2" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="search-level" class="container d-flex justify-content-between">
+          <div id="search-input-group" class="input-group mb-3">
+            <button
+              id="search-dropdown"
+              type="button"
+              class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Search Toggle
+              <span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><button id="textFilterButton" class="dropdown-item filterItems active" onclick="textFilterSwitch(this)">By Text</button></li>
+              <li><button id="genreFilterButton" class="dropdown-item filterItems" onclick="genreFilterSwitch(this)">By Genre</button></li>
+              <li><button id="languageFilterButton" class="dropdown-item filterItems" onclick="languageFilterSwitch(this)">By Language</button></li>
+              <li>
+                <p class="d-inline-flex gap-1">
+                  <button id="movieModifierButton" type="button" class="btn" onclick="switchSearchModifier(this)">Movies</button>
+                  <button
+                    id="showModifierButton"
+                    type="button"
+                    class="btn active"
+                    aria-pressed="true"
+                    onclick="switchSearchModifier(this)"
+                  >
+                    Shows
+                  </button>
+                </p>
+              </li>
+            </ul>
+            <input
+              id="searchByText"
+              type="text"
+              class="form-control"
+              aria-label="Text input with segmented dropdown button"
+              placeholder="Search by text here..."
+            />
+            <button id="search-button" type="button" class="btn btn-outline-secondary">
+              Search
+            </button>
+          </div>
+        </div>
+        <div id="results-level" class="container d-flex justify-content-between">
+
+        </div>
+    </div>
+
+    <script id="book-result-template-grid" type="x-tmpl-mustache">
+      {{#books}}
+      <div class="card box currentResults" style="width: 18rem" type="button"onclick="loadBookInfo('{{id}}')">
+        <img src="{{thumbnail}}" class="card-img-top" />
+        <div class="card-body">
+          <a type="button"><h5 class="card-title">{{title}}</h5></a>
+          <h6>Authors: {{author}}</h6>
+          <p class="card-text">
+          {{description}}
+          </p>
+          <a class="btn btn-primary">More Details</a>
+        </div>
+      </div>
+      {{/books}}
+    </script>
+
+    <script id="book-result-template-list" type="x-tmpl-mustache">
+      <ul class="list-view currentResults">
+        {{#books}}
+        <li class="list-item" onclick="loadBookInfo('{{id}}')" type="button">
+          <img src="{{thumbnail}}" class="list-thumbnail" alt="Book Thumbnail" />
+          <div class="list-content">
+            <h5 class="list-title">{{title}}</h5>
+            <h6 class="list-author">Authors: {{author}}</h6>
+            <p class="list-description">{{description}}</p>
+          </div>
+          <button class="btn btn-secondary more-details-button">More Details</button>
+        </li>
+        {{/books}}
+      </ul>
+    </script>
+
+    <script>
+      var key = "NjllN2ZiN2IwODVkMjI4NTlmYmFhMGIxNmEwYzk3MWU=";
+      var movieBaseURI = `https://api.themoviedb.org/3/discover/movie?api_key=${atob(key)}`
+      var showBaseURI = `https://api.themoviedb.org/3/discover/tv?api_key=${atob(key)}`
+      var searchModifier = "tv;"
+      var filterArray = {
+        "languageFilter" : 0,
+        "genreFilter" : 0,
+        "textFilter" : 1
+      };
+      var sortByModifier = 'asc';
+
+      $(document).ready(function() {
+        renderMovieCarousel();
+        renderShowCarousel();
+      });
+
+      function renderMovieCarousel(){
+        $.ajax({
+          url: `https://api.themoviedb.org/3/movie/popular?api_key=${atob(key)}&language=en-US&page=1`,
+          type: "GET",
+          dataType: "JSON",
+          success: function(response) {
+
+            var html = `
+              <div class="carousel-item active">
+                <img src="https://image.tmdb.org/t/p/w500/${response.results[0].poster_path}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+              </div>`
+
+              $('#carousel-item-list-1').empty().append(html)
+
+            for(var i=1; i<5; i++){
+              var html = `
+              <div class="carousel-item">
+                <img src="https://image.tmdb.org/t/p/w500/${response.results[i].poster_path}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+              </div>`
+
+              $('#carousel-item-list-1').append(html)
+            }
+          },
+          error: function(response) {
+            console.log(response);
+            // var movies = response
+          }
+        });
+      }
+
+      function renderShowCarousel(){
+        $.ajax({
+          url: `https://api.themoviedb.org/3/tv/popular?api_key=${atob(key)}&region=US`,
+          type: "GET",
+          dataType: "JSON",
+          success: function(response) {
+
+            var html = `
+              <div class="carousel-item active">
+                <img src="https://image.tmdb.org/t/p/w500/${response.results[0].poster_path}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+              </div>`
+
+              $('#carousel-item-list-2').empty().append(html)
+
+            for(var i=1; i<5; i++){
+              var html = `
+              <div class="carousel-item">
+                <img src="https://image.tmdb.org/t/p/w500/${response.results[i].poster_path}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+              </div>`
+
+              $('#carousel-item-list-2').append(html)
+            }
+
+          },
+          error: function(response) {
+            console.log(response);
+            // var movies = response
+          }
+        });
+      }
+
+      $(document).ready(function () {
+    // Prevent dropdown menu from closing on item click
+    $('.dropdown-menu .dropdown-item, .dropdown-menu button').on('click', function (event) {
+      event.stopPropagation(); // Prevent the default closing behavior
+      });
+    });
+
+    function switchSearchModifier(element){
+      if(element.id == "movieModifierButton"){
+        $('#showModifierButton').removeClass("active");
+        $('#movieModifierButton').addClass("active");
+        searchModifier = "movie";
+      } else {
+        $('#showModifierButton').addClass("active");
+        $('#movieModifierButton').removeClass("active");
+        searchModifier = "tv";
+      }
+    }
+
+    function genreFilterSwitch(element){
+      if($(element).hasClass('active')){
+        $("#genreFilterButton").removeClass('active');
+      } else {
+        $(".filterItems").removeClass('active');
+        $("#genreFilterButton").addClass('active');
+
+        Object.entries(filterArray).forEach(([key, value]) => {
+        filterArray["key"] = 0;
+        });
+
+        filterArray["genreFilter"] = 1;
+      }
+    }
+
+    function languageFilterSwitch(element){
+      if($(element).hasClass('active')){
+        $("#languageFilterButton").removeClass('active');
+      } else {
+        $(".filterItems").removeClass('active');
+        $("#languageFilterButton").addClass('active');
+
+        Object.entries(filterArray).forEach(([key, value]) => {
+        filterArray["key"] = 0;
+        });
+      
+      filterArray["languageFilter"] = 1;
+      }
+    }
+
+    </script>
+  </body>
+</html>
