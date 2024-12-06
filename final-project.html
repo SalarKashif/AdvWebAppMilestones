@@ -40,7 +40,7 @@
     />
 
     <!-- Custom Styles -->
-    <link rel="stylesheet" type="text/css" href="../../myStyling.css" />
+    <link rel="stylesheet" type="text/css" href="myStyling.css" />
 
     <!-- Icon -->
     <link rel="icon" href= 
@@ -147,9 +147,9 @@
               <span class="visually-hidden">Toggle Dropdown</span>
             </button>
             <ul class="dropdown-menu">
-              <li><button id="textFilterButton" class="dropdown-item filterItems active" onclick="textFilterSwitch(this)">By Text</button></li>
-              <li><button id="genreFilterButton" class="dropdown-item filterItems" onclick="genreFilterSwitch(this)">By Genre</button></li>
-              <li><button id="languageFilterButton" class="dropdown-item filterItems" onclick="languageFilterSwitch(this)">By Language</button></li>
+              <li><button id="textFilterButton" class="dropdown-item filterItems active" onclick="filterSwitch(this)">Search By Text</button></li>
+              <li><button id="genreFilterButton" class="dropdown-item filterItems" onclick="filterSwitch(this)"> Filter By Genre</button></li>
+              <li><button id="languageFilterButton" class="dropdown-item filterItems" onclick="filterSwitch(this)">Change Language</button></li>
               <li>
                 <p class="d-inline-flex gap-1">
                   <button id="movieModifierButton" type="button" class="btn" onclick="switchSearchModifier(this)">Movies</button>
@@ -164,53 +164,93 @@
                   </button>
                 </p>
               </li>
+              <li>
+                <p class="d-inline-flex gap-1">
+                  <button id="gridViewButton" type="button" class="btn" onclick="switchViewModifier(this)"><i class="fa-solid fa-border-all"></i> Grid</button>
+                  <button
+                    id="listViewButton"
+                    type="button"
+                    class="btn active"
+                    aria-pressed="true"
+                    onclick="switchViewModifier(this)"
+                  >
+                  <i class="fa-solid fa-list"></i> List
+                  </button>
+                </p>
+              </li>
             </ul>
             <input
-              id="searchByText"
+              id="textSearchbar"
               type="text"
-              class="form-control"
+              class="form-control searchbars"
               aria-label="Text input with segmented dropdown button"
               placeholder="Search by text here..."
             />
-            <button id="search-button" type="button" class="btn btn-outline-secondary">
+            <select id="genreSearchbar" class="form-control searchbars" style="display: none;">
+              <option value="" disabled selected>Please select</option>
+              <option value="28">Action</option>
+              <option value="16">Animation</option>
+              <option value="35">Comedy</option>
+              <option value="80">Crime</option>
+              <option value="99">Documentary</option>
+              <option value="18">Drama</option>
+              <option value="10751">Family</option>
+              <option value="14">Fantasy</option>
+              <option value="36">History</option>
+              <option value="27">Horror</option>
+              <option value="10402">Music</option>
+              <option value="9648">Mystery</option>
+            </select>
+            <select id="languageSearchbar" class="form-control searchbars" style="display: none;">
+              <option value="" disabled selected>Please select</option>
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="it">Italian</option>
+              <option value="ja">Japanese</option>
+              <option value="ko">Korean</option>
+              <option value="zh">Chinese</option>
+              <option value="ru">Russian</option>
+              <option value="hi">Hindi</option>
+            </select>
+            <button id="search-button" type="button" onclick="search()" class="btn btn-outline-secondary">
               Search
             </button>
           </div>
         </div>
         <div id="results-level" class="container d-flex justify-content-between">
-
+          <div id="movieGallery" class="gallery"></div>
         </div>
     </div>
 
-    <script id="book-result-template-grid" type="x-tmpl-mustache">
-      {{#books}}
-      <div class="card box currentResults" style="width: 18rem" type="button"onclick="loadBookInfo('{{id}}')">
-        <img src="{{thumbnail}}" class="card-img-top" />
+    <script id="result-template-grid" type="x-tmpl-mustache">
+      {{#searchResults}}
+      <div class="card box currentResults" style="width: 60rem" type="button"onclick="loadBookInfo('{{id}}')">
+        <img src="https://image.tmdb.org/t/p/w500/{{thumbnail}}" class="card-img-top" />
         <div class="card-body">
           <a type="button"><h5 class="card-title">{{title}}</h5></a>
-          <h6>Authors: {{author}}</h6>
           <p class="card-text">
           {{description}}
           </p>
           <a class="btn btn-primary">More Details</a>
         </div>
       </div>
-      {{/books}}
+      {{/searchResults}}
     </script>
 
-    <script id="book-result-template-list" type="x-tmpl-mustache">
-      <ul class="list-view currentResults">
-        {{#books}}
+    <script id="result-template-list" type="x-tmpl-mustache">
+      <ul class="list-view currentResults" style="width: 60rem">
+        {{#searchResults}}
         <li class="list-item" onclick="loadBookInfo('{{id}}')" type="button">
-          <img src="{{thumbnail}}" class="list-thumbnail" alt="Book Thumbnail" />
+          <img src="https://image.tmdb.org/t/p/w500/{{thumbnail}}" class="list-thumbnail" alt="Book Thumbnail" />
           <div class="list-content">
             <h5 class="list-title">{{title}}</h5>
-            <h6 class="list-author">Authors: {{author}}</h6>
             <p class="list-description">{{description}}</p>
           </div>
           <button class="btn btn-secondary more-details-button">More Details</button>
         </li>
-        {{/books}}
+        {{/searchResults}}
       </ul>
     </script>
 
@@ -218,19 +258,28 @@
       var key = "NjllN2ZiN2IwODVkMjI4NTlmYmFhMGIxNmEwYzk3MWU=";
       var movieBaseURI = `https://api.themoviedb.org/3/discover/movie?api_key=${atob(key)}`
       var showBaseURI = `https://api.themoviedb.org/3/discover/tv?api_key=${atob(key)}`
-      var searchModifier = "tv;"
+      var searchModifier = "tv"
       var filterArray = {
         "languageFilter" : 0,
         "genreFilter" : 0,
         "textFilter" : 1
       };
       var sortByModifier = 'asc';
+      var viewModifier = 'grid';
+      var searchResults = '';
 
       $(document).ready(function() {
         renderMovieCarousel();
         renderShowCarousel();
+
+        // Prevent dropdown menu from closing on item click
+        $('.dropdown-menu .dropdown-item, .dropdown-menu button').on('click', function (event) {
+          event.stopPropagation(); // Prevent the default closing behavior
+        });
       });
 
+
+      //Renders top movie carousel
       function renderMovieCarousel(){
         $.ajax({
           url: `https://api.themoviedb.org/3/movie/popular?api_key=${atob(key)}&language=en-US&page=1`,
@@ -265,6 +314,7 @@
         });
       }
 
+      //Renders top TV carousel
       function renderShowCarousel(){
         $.ajax({
           url: `https://api.themoviedb.org/3/tv/popular?api_key=${atob(key)}&region=US`,
@@ -300,55 +350,142 @@
         });
       }
 
-      $(document).ready(function () {
-    // Prevent dropdown menu from closing on item click
-    $('.dropdown-menu .dropdown-item, .dropdown-menu button').on('click', function (event) {
-      event.stopPropagation(); // Prevent the default closing behavior
-      });
-    });
-
     function switchSearchModifier(element){
       if(element.id == "movieModifierButton"){
         $('#showModifierButton').removeClass("active");
         $('#movieModifierButton').addClass("active");
         searchModifier = "movie";
       } else {
-        $('#showModifierButton').addClass("active");
         $('#movieModifierButton').removeClass("active");
+        $('#showModifierButton').addClass("active");
         searchModifier = "tv";
       }
     }
 
-    function genreFilterSwitch(element){
-      if($(element).hasClass('active')){
-        $("#genreFilterButton").removeClass('active');
+    function switchViewModifier(element){
+      if(element.id == "gridViewButton"){
+        $('#listViewButton').removeClass("active");
+        $('#gridViewButton').addClass("active");
+        $("#movieGallery").removeClass("list-view");
+        viewModifier = "grid";
       } else {
-        $(".filterItems").removeClass('active');
-        $("#genreFilterButton").addClass('active');
-
-        Object.entries(filterArray).forEach(([key, value]) => {
-        filterArray["key"] = 0;
-        });
-
-        filterArray["genreFilter"] = 1;
+        $('#gridViewButton').removeClass("active");
+        $('#listViewButton').addClass("active");
+        $("#movieGallery").addClass("list-view");
+        viewModifier = "list";
       }
     }
 
-    function languageFilterSwitch(element){
+    function filterSwitch(element){
       if($(element).hasClass('active')){
-        $("#languageFilterButton").removeClass('active');
-      } else {
-        $(".filterItems").removeClass('active');
-        $("#languageFilterButton").addClass('active');
+        $(element).removeClass('active');
+
+        var selectedFilter = element.id.substring(0, element.id.length - 6);
+        filterArray[selectedFilter] = 0;
+
+        var noFilterCheck = true;
 
         Object.entries(filterArray).forEach(([key, value]) => {
-        filterArray["key"] = 0;
+          if(filterArray[key] == 1){
+            noFilterCheck = false;
+          }
         });
-      
-      filterArray["languageFilter"] = 1;
+
+        if(noFilterCheck){
+          filterArray["textFilter"] = 1;
+          $('#textFilterButton').addClass('active');
+        }
+      } else {
+        $(".filterItems").removeClass('active');
+        $(element).addClass('active');
+
+        //set all filters to 0
+        Object.entries(filterArray).forEach(([key, value]) => {
+        filterArray[key] = 0;
+        });
+
+        var selectedFilter = element.id.substring(0, element.id.length - 6);
+        filterArray[selectedFilter] = 1;
       }
+
+      searchBarSwitch(element);
     }
 
+    function searchBarSwitch(element){
+      // var targetedSearchbar = element.id.substring(0, element.id.length - 6)  + "Searchbar";
+      var targetedSearchbar = (Object.entries(filterArray).find(([key, value]) => value === 1)?.[0]);
+      targetedSearchbar = targetedSearchbar.substring(0, targetedSearchbar.length - 6) + "Searchbar";
+
+      $('.searchbars').val('').hide();
+
+      $('#' + targetedSearchbar).show();
+    }
+
+    function search(){
+      var languageString = "";
+      var genreString = "";
+      var textString = "";
+      var apiLink = "https://api.themoviedb.org/3/";
+
+      if(filterArray["languageFilter"]){
+        languageString = '&language=' + $('#languageSearchbar').val();
+
+        apiLink += "discover/";
+      }
+      if(filterArray["genreFilter"]){
+        genreString = '&with_genres=' + $('#genreSearchbar').val();
+
+        apiLink += "discover/";
+      }
+      if(filterArray["textFilter"]){
+        textString = '&query=' + $('#textSearchbar').val();
+
+        apiLink += "search/";
+      }
+
+      if(searchModifier == "tv"){
+        apiLink += "tv?"
+      } else {
+        apiLink += "movie?"
+      }
+
+      apiLink += `api_key=${atob(key)}` + languageString + genreString + textString;
+
+      $.ajax({
+          url: apiLink,
+          type: "GET",
+          dataType: "JSON",
+          success: function(response) {
+            searchResults = response.results.map((results) => ({
+              id: results.id,
+              thumbnail: results.backdrop_path,
+              title: results.original_name,
+              description: results?.overview ? results.overview.substring(0, 60) + "..." : "No description found"
+            })
+          )
+
+            renderSearch();
+          },
+          error: function(response) {
+          }
+        });
+    }
+
+    function renderSearch(){
+      if(searchResults){
+        console.log(searchResults);
+        const templateId =
+        viewModifier == 'grid'
+            ? "#result-template-grid"
+            : "#result-template-list";
+
+        const template = $(templateId).html();
+        const rendered = Mustache.render(template, { searchResults: searchResults });
+
+        // Clear and append the rendered template
+        $("#movieGallery").empty().append(rendered);
+      }
+    }
     </script>
   </body>
 </html>
